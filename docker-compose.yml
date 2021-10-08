@@ -1,0 +1,11 @@
+
+version: "3.7"
+
+services:
+  mongodb:
+    container_name: go-mongodb
+    image: mongo:4.2.12
+    ports:
+      - 27017:27017
+    volumes:
+      - ./docker_volumes/db:/data/db
