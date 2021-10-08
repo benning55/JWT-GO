@@ -1,1 +1,2 @@
-./docker_volumes/*
+.docker_volumes
+docker_volumes/db/*
