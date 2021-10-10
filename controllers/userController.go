@@ -142,7 +142,32 @@ func Login() gin.HandlerFunc {
 }
 
 func GetUsers() gin.HandlerFunc {
-	return func(c *gin.Context) { c.JSON(http.StatusBadRequest, gin.H{"hello": "hello"}) }
+	return func(c *gin.Context) {
+		var users []models.User
+
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+
+		cur, err := userCollection.Find(ctx, bson.D{})
+		defer cancel()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for cur.Next(context.TODO()) {
+			//Create a value into which the single document can be decoded
+			var elem models.User
+			err := cur.Decode(&elem)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			users = append(users, elem)
+
+		}
+
+		c.JSON(http.StatusOK, users)
+	}
 }
 
 func GetUser() gin.HandlerFunc {
